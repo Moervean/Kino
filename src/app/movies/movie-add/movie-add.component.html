@@ -1,0 +1,23 @@
+<div class="d-flex  justify-content-center">
+  <div class="btn-group-vertical align-items-center">
+    <form [formGroup]="movieForm" (ngSubmit)="addMovie()">
+      <p appStyle>Tytuł filmu</p>
+      <input style="; width: 200px" formControlName="title" type="text">
+      <div *ngIf="movieForm.get('title').invalid&&movieForm.touched">
+        <div style="color: red">Tytuł jest wymagany</div>
+      </div>
+      <p appStyle>Obraz</p>
+      <input formControlName="img" style="width: 200px;margin-bottom: 20px"><br>
+      <div *ngIf="movieForm.get('img').invalid&&movieForm.touched">
+        <div style="color: red">Link obrazu jest wymagany</div>
+      </div>
+      <p appStyle>Czas trwania:</p>
+      <input formControlName="duration" style="width: 200px;margin-bottom: 20px"><br>
+      <div *ngIf="movieForm.get('duration').invalid&&movieForm.touched">
+        <div style="color: red">Nie poprawna forma godziny</div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 200px">Dodaj film</button>
+    </form>
+  </div>
+</div>
+

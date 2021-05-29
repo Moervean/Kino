@@ -1,0 +1,27 @@
+<div class="d-flex justify-content-center">
+  <form (ngSubmit)="editSeance()" [formGroup]="movieForm" style="margin: 35px;">
+
+    <p style="color: white; text-align: center" >Tytuł filmu </p>
+    <p style="background: white; width: 200px;margin-bottom: 15px" >{{title}}<br>
+    <p style="color: white; text-align: center" >Godzina seansu </p>
+    <input style="background: white;width: 200px;margin-bottom: 15px" formControlName="time"><br>
+    <div *ngIf="movieForm.get('time').invalid&&movieForm.touched">
+      <div style="color: red">Nie poprawna forma godziny</div>
+    </div>
+    <p style="color: white; text-align: center" >Data seansu </p>
+    <input style="background: white;width: 200px;margin-bottom: 15px" formControlName="date" type="date" required><br>
+    <p style="color: white; text-align: center">Numer sali:</p>
+    <input formControlName="roomNumber" style="width: 200px;margin-bottom: 15px"><br>
+    <div *ngIf="movieForm.get('roomNumber').invalid&&movieForm.touched">
+      <div style="color: red">Numer sali jest wymagany</div>
+    </div>
+    <p style="color: white; text-align: center">Liczba miejsc:</p>
+    <input formControlName="roomSeats" style="width: 200px;margin-bottom: 15px"><br>
+    <div *ngIf="movieForm.get('roomSeats').invalid&&movieForm.touched">
+      <div style="color: red">Liczba miejsc jest wymagana</div>
+    </div>
+    <div class="d-flex justify-content-center">
+      <button class="btn-success" type="submit" style="text-align: center">Edytuj Seans</button>
+    </div>
+  </form>
+</div>

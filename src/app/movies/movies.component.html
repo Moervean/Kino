@@ -1,0 +1,31 @@
+<div *ngFor="let movie of moviesList">
+  <div class="row  align-items-center" style="margin: 35px; align-content: center">
+    <img src="{{movie.img}}">
+    <div appStyle>
+      <p>Tytul: {{movie.name | titlecase}}</p>
+      <p>Czas trwania: {{movie.duration}}</p>
+    </div>
+    <p appStyle>Oceny użytkowników: </p>
+    <ngb-rating [(rate)]="movie.rate"
+                style="color: white; margin-right: 35px; margin-bottom: 15px"
+                readonly="readonly"></ngb-rating>
+    <div class="btn-group-vertical">
+      <button class="btn btn-primary"
+              style="height: fit-content; align-content: end"
+              (click)="editMovie(movie)">Edytuj Film
+      </button>
+      <button class="btn btn-danger"
+              style="height: fit-content"
+              (click)="removeMovie(movie.name)">Usuń Film
+      </button>
+    </div>
+
+  </div>
+</div>
+<div class="d-flex justify-content-end">
+  <button class="btn btn-success"
+          style="height: fit-content;
+                margin-right: 35px"
+          (click)="addMovie()">Dodaj Film
+  </button>
+</div>

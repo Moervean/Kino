@@ -1,0 +1,32 @@
+<div class="d-flex  justify-content-center">
+  <div class="btn-group-vertical align-items-center">
+    <form [formGroup]="seanceForm" (ngSubmit)="addSeance()">
+      <p appStyle>Wybierz film</p>
+      <select style="; width: 200px" formControlName="title" type="text">
+        <option  *ngFor="let movie of movies">{{movie.name}}</option>
+      </select>
+      <p appStyle>Data Seansu:</p>
+      <input type="date" formControlName="date" style="width: 200px">
+      <div *ngIf="seanceForm.get('date').invalid&&seanceForm.touched">
+        <div style="color: red">Data jest wymagana</div>
+      </div>
+      <p appStyle>Godzina Seansu:</p>
+      <input formControlName="time" style="width: 200px;margin-bottom: 20px"><br>
+      <div *ngIf="seanceForm.get('time').invalid&&seanceForm.touched">
+        <div style="color: red">Nie poprawna forma godziny</div>
+      </div>
+      <p appStyle>Numer Sali:</p>
+      <input formControlName="roomNumber" style="width: 200px;margin-bottom: 20px"><br>
+      <div *ngIf="seanceForm.get('roomNumber').invalid&&seanceForm.touched">
+        <div style="color: red">Numer sali jest wymagany</div>
+      </div>
+      <p appStyle>Liczba miejsc:</p>
+      <input formControlName="roomSeats" style="width: 200px;margin-bottom: 20px"><br>
+      <div *ngIf="seanceForm.get('roomSeats').invalid&&seanceForm.touched">
+        <div style="color: red">Liczba miejsc jest wymagana</div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 200px">Dodaj seans</button>
+    </form>
+  </div>
+</div>
+
