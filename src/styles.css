@@ -1,1 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+img {
+  width: 20%;
+  height: 20%;
+}
+body{
+  background-image: url("assets/img/main_picture.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+
+}
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
