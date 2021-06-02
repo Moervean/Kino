@@ -1,0 +1,14 @@
+.btn-custom {
+  border-bottom: 5px ;
+  position: relative;
+}
+
+.btn-custom:hover {
+  top: 2.5px;
+  border-bottom-width: 2.5px;
+}
+
+.btn-custom:active {
+  top: 5px;
+  border-bottom: 0;
+}

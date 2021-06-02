@@ -20,11 +20,6 @@
       <div *ngIf="seanceForm.get('roomNumber').invalid&&seanceForm.touched">
         <div style="color: red">Numer sali jest wymagany</div>
       </div>
-      <p appStyle>Liczba miejsc:</p>
-      <input formControlName="roomSeats" style="width: 200px;margin-bottom: 20px"><br>
-      <div *ngIf="seanceForm.get('roomSeats').invalid&&seanceForm.touched">
-        <div style="color: red">Liczba miejsc jest wymagana</div>
-      </div>
       <button type="submit" class="btn btn-primary" style="width: 200px">Dodaj seans</button>
     </form>
   </div>

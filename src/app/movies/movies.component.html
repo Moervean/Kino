@@ -1,4 +1,17 @@
-<div *ngFor="let movie of moviesList">
+<body>
+<h3 style = "color: white">Sortowanie</h3>
+
+<button class="btn btn-primary btn-custom"
+        style="height: fit-content; align-content: end"
+        (click)="sortByName()">Sortuj po nazwie
+</button>
+<button class="btn btn-primary btn-custom"
+        style="height: fit-content; align-content: end"
+        (click)="sortByDuration()">Sortuj po czasie trwania
+</button>
+<div class = "overflow-auto" >
+<div *ngFor="let movie of moviesList" >
+
   <div class="row  align-items-center" style="margin: 35px; align-content: center">
     <img src="{{movie.img}}">
     <div appStyle>
@@ -10,11 +23,11 @@
                 style="color: white; margin-right: 35px; margin-bottom: 15px"
                 readonly="readonly"></ngb-rating>
     <div class="btn-group-vertical">
-      <button class="btn btn-primary"
+      <button class="btn btn-primary btn-custom"
               style="height: fit-content; align-content: end"
               (click)="editMovie(movie)">Edytuj Film
       </button>
-      <button class="btn btn-danger"
+      <button class="btn btn-danger btn-custom"
               style="height: fit-content"
               (click)="removeMovie(movie.name)">Usuń Film
       </button>
@@ -22,6 +35,8 @@
 
   </div>
 </div>
+</div>
+
 <div class="d-flex justify-content-end">
   <button class="btn btn-success"
           style="height: fit-content;
@@ -29,3 +44,4 @@
           (click)="addMovie()">Dodaj Film
   </button>
 </div>
+</body>

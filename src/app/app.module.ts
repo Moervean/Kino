@@ -23,6 +23,10 @@ import { MovieAddComponent } from './movies/movie-add/movie-add.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ErrorComponentComponent } from './error-component/error-component.component';
+import {HttpClientModule, HttpHeaders} from '@angular/common/http';
+import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { InMemoryDataService } from './in-memory-data.service';
+import {roomsServices} from './services/roms.services';
 
 const appRoutes: Routes = [
   {path: '' , component: HomeComponent},
@@ -52,7 +56,6 @@ const appRoutes: Routes = [
     StyleDirective,
     MovieAddComponent,
     ErrorComponentComponent,
-
   ],
   imports: [
     BrowserModule,
@@ -62,9 +65,11 @@ const appRoutes: Routes = [
     NgbModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatDialogModule
+    MatDialogModule,
+    HttpClientModule,
+
   ],
-  providers: [moviesServices, SeancesService],
+  providers: [moviesServices, SeancesService, roomsServices],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

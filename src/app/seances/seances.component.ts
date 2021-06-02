@@ -23,7 +23,7 @@ import {MonthPipePipe} from '../month.pipe';
   styleUrls: ['./seances.component.css'],
   providers: [DatePipe, MonthPipePipe]
 })
-export class SeancesComponent implements OnInit {
+export class SeancesComponent implements OnInit, OnChanges {
 
   @ViewChild('seancesList') ref: ElementRef;
   date: string = this.datapipe.transform(new Date(),'yyyy-MM-dd');
@@ -47,6 +47,10 @@ export class SeancesComponent implements OnInit {
 
   ngOnInit(): void {
     this.movies = this.msService.movieList;
+    this.getSeances();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
     this.getSeances();
   }
 

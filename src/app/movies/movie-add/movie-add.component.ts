@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {moviesServices} from '../../services/movies.services';
 import {Router} from '@angular/router';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Component({
   selector: 'app-movie-add',
@@ -12,7 +13,8 @@ export class MovieAddComponent implements OnInit {
   movieForm: FormGroup;
 
   constructor(private msService: moviesServices,
-              private router: Router) { }
+              private router: Router,
+              private http: HttpClient) { }
 
   ngOnInit(): void {
     this.movieForm = new FormGroup({
@@ -24,6 +26,20 @@ export class MovieAddComponent implements OnInit {
 
   addMovie() {
     if (this.movieForm.valid) {
+      const headers = new HttpHeaders()
+        .set('Content-Type', 'application/json');
+      const httpOptions = {
+        nazwa: this.movieForm.value.title,
+        czasTrwania: this.movieForm.value.duration,
+        img: this.movieForm.value.img,
+        ocena: 0
+      };
+
+      this.http.post('http://localhost:8080/movieADD/' + encodeURIComponent(JSON.stringify(httpOptions)),
+        {headers: headers}).subscribe(data => {
+        console.log(data);
+      });
+
       this.msService.addMovie(this.movieForm.value.title,
         this.movieForm.value.img,
         this.movieForm.value.duration);

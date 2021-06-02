@@ -1,21 +1,32 @@
 import {MovieModel} from '../Models/movie.model';
+import {Observable} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
-
+@Injectable()
 export class moviesServices {
-  private _movieList: MovieModel[] = [
-    new MovieModel('Spiderman',
-      'https://bi.im-g.pl/im/f3/2e/17/z24307187V,-Spider-Man-Uniwersum-.jpg',
-      '2:07:36',
-      7),
-    new MovieModel('Batman',
-      'https://cdn2.unrealengine.com/Diesel%2Fproductv2%2Fbatman-arkham-knight%2FEGS_WB_Batman_Arkham_Knight_G1_1920x1080_19_0911-1920x1080-1d69e15f00cb5ab57249f208f1f8f45d52cbbc59.jpg?h=1080&resize=1&w=1920',
-      '1:48:36',
-    9),
-  ];
+  jsonvar;
+  private _movieList: MovieModel[] = [];
+
+    constructor(private http: HttpClient) {
+       this.http.get('http://localhost:8080/movies').subscribe((data) => {
+        this.jsonvar = data;
+        for (let i = 0; i < this.jsonvar.length; i++) {
+          this._movieList.push(new MovieModel(this.jsonvar[i]["id"],this.jsonvar[i]["nazwa"],this.jsonvar[i]["img"],this.jsonvar[i]["czasTrwania"],
+            this.jsonvar[i]["ocena"]));
+        }
+      });
+   }
+
+   public async init(){
+
+   }
   addMovie(title: string, img: string, duration: string): void {
-    this._movieList.push(new MovieModel(title, img, duration, 0));
+    this._movieList.push(new MovieModel(1, title, img, duration, 0));
   }
   get movieList(): MovieModel[] {
+
+
     return this._movieList;
   }
   getMovie(title: string): MovieModel {
@@ -27,11 +38,17 @@ export class moviesServices {
     }
   }
   removeMovie(title: string){
+      let id;
     for (let i = 0; i < this._movieList.length; i++){
       if (title === this._movieList[i].name){
+        id = this._movieList[i].id;
         this._movieList.splice(i, 1);
       }
     }
+
+    this.http.post('http://localhost:8080/movieDelete/' + id, '').subscribe(data => {
+      console.log(data);
+    });
   }
 
 

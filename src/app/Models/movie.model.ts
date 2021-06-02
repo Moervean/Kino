@@ -1,46 +1,58 @@
 export class MovieModel {
-  private _name: string;
-  private _img: string;
-  private _duration: string;
-  private _rate: number;
+   id: number;
+
+
+  get idg(): number {
+    return this.id;
+  }
+
+  set ids(value: number) {
+    this.id = value;
+  }
+
+   nazwa: string;
+   img: string;
+   czasTrwania: string;
+   ocena: number;
 
   get rate(): number {
-    return this._rate;
+    return this.ocena;
   }
 
   set rate(value: number) {
-    this._rate = value;
+    this.ocena = value;
   }
 
   get name(): string {
-    return this._name;
+    return this.nazwa;
   }
 
   set name(value: string) {
-    this._name = value;
+    this.nazwa = value;
   }
 
-  get img(): string {
-    return this._img;
+  get imag(): string {
+    return this.img;
   }
 
-  set img(value: string) {
-    this._img = value;
+  set imag(value: string) {
+    this.img = value;
   }
 
   get duration(): string {
-    return this._duration;
+    return this.czasTrwania;
   }
 
   set duration(value: string) {
-    this._duration = value;
+    this.czasTrwania = value;
   }
 
 
-  constructor(name: string, img: string, duration: string, rate: number) {
-    this._name = name;
-    this._img = img;
-    this._duration = duration;
-    this._rate = rate;
+  constructor(id: number, nazwa: string, img: string, czasTrwania: string, ocena: number) {
+    this.id = id;
+    this.nazwa = nazwa;
+    this.img = img;
+    this.czasTrwania = czasTrwania;
+    this.ocena = ocena;
   }
 }

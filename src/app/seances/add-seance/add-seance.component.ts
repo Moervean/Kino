@@ -7,6 +7,8 @@ import {SeancesService} from '../../services/seances.service';
 import {Room} from '../../Models/room.model';
 import {MatDialog, MatDialogConfig, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {ErrorComponentComponent} from '../../error-component/error-component.component';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {roomsServices} from '../../services/roms.services';
 
 @Component({
   selector: 'app-add-seance',
@@ -25,7 +27,10 @@ export class AddSeanceComponent implements OnInit {
 
   constructor(private msService: moviesServices,
               private seancesSerivce: SeancesService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private http: HttpClient,
+              private rmService: roomsServices
+              ) {
   }
 
   ngOnInit(): void {
@@ -35,8 +40,7 @@ export class AddSeanceComponent implements OnInit {
       title: new FormControl(this.title, Validators.required),
       date: new FormControl(this.date, Validators.required),
       time: new FormControl(this.time, [Validators.required, Validators.pattern('[0-2][0-9]:[0-5][0-9]')]),
-      roomNumber: new FormControl(this.roomNumber, [Validators.required, Validators.pattern('^[0-9]*$')]),
-      roomSeats: new FormControl(this.roomSeats, [Validators.required, Validators.pattern('^[0-9]*$')])
+      roomNumber: new FormControl(this.roomNumber, [Validators.required, Validators.pattern('^[0-9]*$')])
     });
 
   }
@@ -48,7 +52,21 @@ export class AddSeanceComponent implements OnInit {
         this.seancesSerivce.addSeance(this.msService.getMovie(this.seanceForm.value.title),
           this.seanceForm.value.date,
           this.seanceForm.value.time,
-          new Room(this.seanceForm.value.roomNumber, this.seanceForm.value.roomSeats));
+          this.rmService.getRoomById(this.seanceForm.value.roomNumber));
+
+        const headers = new HttpHeaders()
+          .set('Content-Type', 'application/json');
+        const httpOptions = {
+          movieId: this.msService.getMovie(this.seanceForm.value.title).id,
+          data: this.seanceForm.value.date,
+          czas: this.seanceForm.value.time,
+          roomId: this.seanceForm.value.roomNumber
+        };
+
+        this.http.post('http://localhost:8080/seansAdd/' + encodeURIComponent(JSON.stringify(httpOptions)),
+          {headers: headers}).subscribe(data => {
+          console.log(data);
+        });
       }
     }else{
       const dialogConfig = new MatDialogConfig();

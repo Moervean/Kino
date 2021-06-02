@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {moviesServices} from '../services/movies.services';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -7,7 +10,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  constructor(private mServices: moviesServices,
+              private route: ActivatedRoute,
+              private router: Router,
+              private http: HttpClient) { }
 
   ngOnInit(): void {
   }
