@@ -49,11 +49,6 @@ export class SeancesComponent implements OnInit, OnChanges {
     this.movies = this.msService.movieList;
     this.getSeances();
   }
-
-  ngOnChanges(changes: SimpleChanges) {
-    this.getSeances();
-  }
-
   getSeances(): void {
     this.seancesMap = new Map<any, any>();
     this.specificSeances = new Array(0);
@@ -76,7 +71,6 @@ export class SeancesComponent implements OnInit, OnChanges {
 
       }
       this.popularity.set(this.movies[j].name, this.reservedSeats / this.seatsInSeance * 10);
-      console.log(this.movies[j].name + this.popularity.get(this.movies[j].name));
       this.seatsInSeance = 0;
       this.reservedSeats = 0;
     }

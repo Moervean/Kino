@@ -20,6 +20,7 @@ export class AddSeanceComponent implements OnInit {
   date: Date;
   time: string;
   movies: MovieModel[];
+  rooms: Room[];
   seanceForm: FormGroup;
   title: string;
   roomNumber: number;
@@ -35,12 +36,14 @@ export class AddSeanceComponent implements OnInit {
 
   ngOnInit(): void {
     this.movies = this.msService.movieList;
+    this.rooms = this.rmService.roomsList;
+    console.log(this.rooms);
     this.title = this.movies[0].name;
     this.seanceForm = new FormGroup({
       title: new FormControl(this.title, Validators.required),
       date: new FormControl(this.date, Validators.required),
       time: new FormControl(this.time, [Validators.required, Validators.pattern('[0-2][0-9]:[0-5][0-9]')]),
-      roomNumber: new FormControl(this.roomNumber, [Validators.required, Validators.pattern('^[0-9]*$')])
+      roomNumber: new FormControl(this.roomNumber, Validators.required)
     });
 
   }
@@ -48,6 +51,7 @@ export class AddSeanceComponent implements OnInit {
   addSeance(): void {
     if (this.seancesSerivce.isRoomFree(this.seanceForm.value.date, this.seanceForm.value.time,
           this.seanceForm.value.roomNumber, this.seanceForm.value.title)) {
+
       if (this.seanceForm.valid) {
         this.seancesSerivce.addSeance(this.msService.getMovie(this.seanceForm.value.title),
           this.seanceForm.value.date,
@@ -65,7 +69,7 @@ export class AddSeanceComponent implements OnInit {
 
         this.http.post('http://localhost:8080/seansAdd/' + encodeURIComponent(JSON.stringify(httpOptions)),
           {headers: headers}).subscribe(data => {
-          console.log(data);
+
         });
       }
     }else{

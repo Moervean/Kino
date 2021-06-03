@@ -6,6 +6,15 @@ export class SeanceModel {
     return this._room;
   }
 
+  private _id: number;
+  get id(): number {
+    return this._id;
+  }
+
+  set id(value: number) {
+    this._id = value;
+  }
+
   private _movie: MovieModel;
   private _date: string;
   private _time: string;
@@ -36,7 +45,8 @@ export class SeanceModel {
   }
 
 
-  constructor(movie: MovieModel, date: string, time: string, room: Room) {
+  constructor(id: number, movie: MovieModel, date: string, time: string, room: Room) {
+    this._id = id;
     this._movie = movie;
     this._date = date;
     this._time = time;
