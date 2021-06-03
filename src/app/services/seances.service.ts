@@ -25,7 +25,7 @@ export class SeancesService {
             data[0].czasTrwania,
             data[0].ocena);
           const room = this.rmService.getRoomById(this.jsonvar[i].roomId);
-          this._seancesList.push(new SeanceModel(this.jsonvar[i].id,movie, this.jsonvar[i].data, this.jsonvar[i].czas, room));
+          this._seancesList.push(new SeanceModel(this.jsonvar[i].id, movie, this.jsonvar[i].data, this.jsonvar[i].czas, room));
 
 
         });
@@ -36,6 +36,30 @@ export class SeancesService {
 
   }
 
+  reloadList(){
+    this._seancesList = [];
+    this.http.get('http://localhost:8080/seansList').subscribe((data) => {
+      this.jsonvar = data;
+      for (let i = 0; i < this.jsonvar.length; i++) {
+        // this._movieList.push(new MovieModel(this.jsonvar[i]["id"],this.jsonvar[i]["nazwa"],this.jsonvar[i]["img"],this.jsonvar[i]["czasTrwania"],
+        //   this.jsonvar[i]["ocena"]));
+        this.http.get('http://localhost:8080/movies/' + this.jsonvar[i].movieId).subscribe(data => {
+          const movie = new MovieModel(data[0].id,
+            data[0].nazwa,
+            data[0].img,
+            data[0].czasTrwania,
+            data[0].ocena);
+          const room = this.rmService.getRoomById(this.jsonvar[i].roomId);
+          this._seancesList.push(new SeanceModel(this.jsonvar[i].id, movie, this.jsonvar[i].data, this.jsonvar[i].czas, room));
+
+
+        });
+
+
+      }
+    });
+
+  }
   private _seancesList: SeanceModel[] = [];
   get seancesList(): SeanceModel[] {
     return this._seancesList;
@@ -44,8 +68,6 @@ export class SeancesService {
   daySeancesList(date: string): SeanceModel[] {
     this.list = [];
     for (let i = 0; i < this._seancesList.length; i++) {
-      console.log(date);
-      console.log(this._seancesList[i].date );
 
       if (this._seancesList[i].date == date) {
         this.list.push(this._seancesList[i]);
@@ -81,8 +103,8 @@ export class SeancesService {
     }
   }
 
-  addSeance(movie: MovieModel, date: string, time: string, room: Room) {
-    this._seancesList.push(new SeanceModel(movie, date, time, room));
+  addSeance(id:number,movie: MovieModel, date: string, time: string, room: Room) {
+    this._seancesList.push(new SeanceModel(id,movie, date, time, room));
   }
 
   isRoomFree(date: string, time: string, roomNumber: number, title: string): boolean {

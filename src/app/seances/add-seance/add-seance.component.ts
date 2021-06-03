@@ -53,10 +53,8 @@ export class AddSeanceComponent implements OnInit {
           this.seanceForm.value.roomNumber, this.seanceForm.value.title)) {
 
       if (this.seanceForm.valid) {
-        this.seancesSerivce.addSeance(this.msService.getMovie(this.seanceForm.value.title),
-          this.seanceForm.value.date,
-          this.seanceForm.value.time,
-          this.rmService.getRoomById(this.seanceForm.value.roomNumber));
+
+
 
         const headers = new HttpHeaders()
           .set('Content-Type', 'application/json');
@@ -71,6 +69,9 @@ export class AddSeanceComponent implements OnInit {
           {headers: headers}).subscribe(data => {
 
         });
+
+        this.seancesSerivce.reloadList();
+
       }
     }else{
       const dialogConfig = new MatDialogConfig();

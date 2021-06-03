@@ -23,7 +23,7 @@ import {MonthPipePipe} from '../month.pipe';
   styleUrls: ['./seances.component.css'],
   providers: [DatePipe, MonthPipePipe]
 })
-export class SeancesComponent implements OnInit, OnChanges {
+export class SeancesComponent implements OnInit {
 
   @ViewChild('seancesList') ref: ElementRef;
   date: string = this.datapipe.transform(new Date(),'yyyy-MM-dd');
