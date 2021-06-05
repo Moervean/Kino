@@ -43,11 +43,14 @@ export class SeancesComponent implements OnInit {
               private router: Router,
               private datapipe: DatePipe,
               private searchPipe: MonthPipePipe) {
+    this.movies = this.msService.movieList;
+    this.getSeances();
   }
 
   ngOnInit(): void {
-    this.movies = this.msService.movieList;
+    setTimeout(() => this.getSeances(),500);
     this.getSeances();
+
   }
   getSeances(): void {
     this.seancesMap = new Map<any, any>();

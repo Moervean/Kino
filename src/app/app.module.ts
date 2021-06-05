@@ -40,6 +40,9 @@ const appRoutes: Routes = [
   {path: 'seances/edit', component: SeancesEditComponent},
   {path: 'tickets', component: TicketsComponent  },
   {path: 'seances/add', component: AddSeanceComponent  },
+  {path: 'login', component: LoginComponent},
+  {path: 'register', component: RegisterComponent},
+  {path: 'shop', component: ShopComponent},
 
 
 ];
