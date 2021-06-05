@@ -27,6 +27,9 @@ import {HttpClientModule, HttpHeaders} from '@angular/common/http';
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './in-memory-data.service';
 import {roomsServices} from './services/roms.services';
+import { LoginComponent } from './login/login/login.component';
+import { RegisterComponent } from './login/register/register.component';
+import { ShopComponent } from './login/shop/shop.component';
 
 const appRoutes: Routes = [
   {path: '' , component: HomeComponent},
@@ -56,6 +59,9 @@ const appRoutes: Routes = [
     StyleDirective,
     MovieAddComponent,
     ErrorComponentComponent,
+    LoginComponent,
+    RegisterComponent,
+    ShopComponent,
   ],
   imports: [
     BrowserModule,
