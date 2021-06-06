@@ -65,7 +65,7 @@ export class SeancesComponent implements OnInit {
         if (this.daySeances[i].movie.name === this.movies[j].name) {
           this.specificSeances.push(this.daySeances[i].time);
           this.seatsInSeance += this.daySeances[i].room.seatsNumber;
-          this.reservedSeats += this.daySeances[i].room.getReservedSeats();
+          //this.reservedSeats += this.daySeances[i].room.getReservedSeats();
         }
         this.specificSeances.sort();
         if(this.specificSeances.length !== 0)

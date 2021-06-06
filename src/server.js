@@ -60,13 +60,12 @@ app.get("/seans/:id", function (req, res) {
   try {
     seansById(req.params.id).then((x) => {
       res.end(x);
-      console.log("movies: " + x);
+      console.log("seances: " + x);
     });
   } catch (err) {
     console.log("ERROR " + err);
   }
 });
-
 app.get("/roomsList", function (req, res) {
   try {
     roomsList().then((x) => {
@@ -92,7 +91,7 @@ app.get("/seansList/:ids", function (req, res) {
   try {
 	  var a=req.params.ids;
 	  a=JSON.parse(a);
-	  
+
     seansByIds(a.seanse).then((x) => {
 		var xx=JSON.parse(x);
 		xx={seanse:x,miejsca:a.miejsca};
@@ -203,6 +202,26 @@ app.post("/seansEdit/:id/:data", (req, res) => {
 
   res.send("Seans edytowany. Id: " + id + "\nDane: " + newSeans);
 });
+
+app.post("/buyTicket/:id/:data", (req, res) => {
+  const data=JSON.parse(req.params.data);
+  const id = req.params.id;
+
+  connection.query(
+    "UPDATE `seans` SET `zajeteMiejsca`=\"" +
+    data.reservedSeats +
+    "\" WHERE `id` = " +
+    id,
+    function (err, res, fields) {
+      if (err) {
+        console.log(err.message);
+      }
+    }
+  );
+
+  res.send("Seans edytowany. Id: " + id + "\nDane: " );
+});
+
 //rezerwacje
 // przesylane jest jako data (json string) token (usera), id_seansu i nr_miejsca
 //
@@ -243,8 +262,8 @@ app.post("/rezerwacjaAdd/:data", (req, res) => {
 		  return;
 	  }
     });
-	
-  
+
+
 
   //res.send("Dodano rezerwacje: " + rez);
 });
@@ -293,7 +312,7 @@ app.post("/login/:data", (req, res) => {
 			res.send(JSON.stringify({code:0,err:"Nie ma konta o podanym loginie"}));
 		  }else{
 			  if(res2[0].password == sha256(user.password)){
-				  
+
 				  var token=generateToken();
 				  console.log("wygenerowany token: "+token)
 				  res.send(JSON.stringify({code:1,msg:"Pomyślnie zalogowano",token:token}));
@@ -326,7 +345,7 @@ app.get("/getUserData/:token", (req, res) => {
 			console.log("Znaleziono konto");
 			var u=res2[0];                     /// usuwanie id ze wzgledow bezpieczenstwa i wyslanie loginu i emaila do klienta
 			u.id=null;
-			
+
 			res.send(JSON.stringify({code:1,msg:"Pomyślnie zalogowano",user:u}));
 		  }
 	});

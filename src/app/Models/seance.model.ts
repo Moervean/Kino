@@ -19,6 +19,15 @@ export class SeanceModel {
   private _date: string;
   private _time: string;
   private _room: Room;
+  private _reservedSeats: string;
+
+  get reservedSeats(): string {
+    return this._reservedSeats;
+  }
+
+  set reservedSeats(value: string) {
+    this._reservedSeats = value;
+  }
 
   get movie(): MovieModel {
     return this._movie;
@@ -45,11 +54,12 @@ export class SeanceModel {
   }
 
 
-  constructor(id: number, movie: MovieModel, date: string, time: string, room: Room) {
+  constructor(id: number, movie: MovieModel, date: string, time: string, room: Room, reservedSeats: string) {
     this._id = id;
     this._movie = movie;
     this._date = date;
     this._time = time;
     this._room = room;
+    this._reservedSeats = reservedSeats;
   }
 }
