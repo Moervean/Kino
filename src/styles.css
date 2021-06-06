@@ -13,3 +13,10 @@ body{
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.navbar-nav > li > .dropdown-menu a:link,
+.navbar-nav > li > .dropdown-menu a:hover { background-color: #920000;}
+.navbar-nav > li > .dropdown-menu{
+	background-color: #810000;
+}

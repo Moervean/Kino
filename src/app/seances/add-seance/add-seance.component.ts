@@ -65,7 +65,7 @@ export class AddSeanceComponent implements OnInit {
           roomId: this.seanceForm.value.roomNumber
         };
 
-        this.http.post('http://localhost:8080/seansAdd/' + encodeURIComponent(JSON.stringify(httpOptions)),
+        const response = this.http.post('http://localhost:8080/seansAdd/' + encodeURIComponent(JSON.stringify(httpOptions)),
           {headers: headers}).subscribe(data => {
 
         });
