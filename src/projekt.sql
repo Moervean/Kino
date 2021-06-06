@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 5.0.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 06 Cze 2021, 13:13
--- Wersja serwera: 10.1.36-MariaDB
--- Wersja PHP: 7.2.11
+-- Czas generowania: 06 Cze 2021, 22:11
+-- Wersja serwera: 10.4.17-MariaDB
+-- Wersja PHP: 8.0.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -84,27 +83,18 @@ INSERT INTO `room` (`id`, `miejsca`) VALUES
 CREATE TABLE `seans` (
   `id` int(11) NOT NULL,
   `movieId` int(11) NOT NULL,
-  `data` date NOT NULL,
+  `data` varchar(10) NOT NULL,
   `czas` varchar(32) NOT NULL,
-  `roomId` int(11) NOT NULL
+  `roomId` int(11) NOT NULL,
+  `zajeteMiejsca` varchar(180) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Zrzut danych tabeli `seans`
 --
 
-INSERT INTO `seans` (`id`, `movieId`, `data`, `czas`, `roomId`) VALUES
-(1, 1, '2021-05-29', '12:00', 1),
-(2, 2, '2021-06-05', '25:00', 1),
-(3, 2, '2021-06-05', '12:00', 1),
-(4, 2, '2021-06-05', '10:00', 1),
-(5, 1, '2021-06-05', '12:00', 1),
-(6, 1, '2021-06-05', '12:00', 1),
-(7, 1, '2021-06-05', '12:00', 1),
-(8, 1, '2021-06-05', '12:00', 1),
-(9, 1, '2021-06-05', '12:00', 1),
-(10, 1, '2021-06-05', '12:00', 1),
-(11, 1, '2021-06-05', '12:00', 1);
+INSERT INTO `seans` (`id`, `movieId`, `data`, `czas`, `roomId`, `zajeteMiejsca`) VALUES
+(14, 1, '2021-06-06', '12:00', 1, '0,1,2,3,4,5,6,');
 
 -- --------------------------------------------------------
 
@@ -125,12 +115,13 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `login`, `password`, `token`, `email`) VALUES
-(1, 'test', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', '36f19428cc360c6dcd2a190dd907ae9ec252b4b8c958c0ce720452d306039630', 'patrykbucholc@onet.pl'),
+(1, 'test', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 'f51e0e5e1bfa5778f1de03129d0cc4b7e72e7ddc02ec6845a1ec69bc09a3a100', 'patrykbucholc@onet.pl'),
 (2, 'test2', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', '', 'test2@test.pl'),
 (3, 'test22', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', '', 'test22@test.pl'),
 (4, 'test4', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', '', 'test21@test.pl'),
 (5, 'patrykbucholc2@onet.pl', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', '', 'test112'),
-(6, 'asd', '688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6', '', 'asd');
+(6, 'asd', '688787d8ff144c502c7f5cffaafe2cc588d86079f9de88304c26b0cb99ce91c6', '', 'asd'),
+(7, 'MojLogin', 'a03c8a194fa8d2735a3feb817978239e8d39844474cc47db4427b0a730e8302b', '0f339a1720c314f7df420404c837834dffb46f71bd9d49a1198ffe2557965878', 'MojEmail@wp.pl');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -167,7 +158,7 @@ ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT dla zrzuconych tabel
 --
 
 --
@@ -192,13 +183,13 @@ ALTER TABLE `room`
 -- AUTO_INCREMENT dla tabeli `seans`
 --
 ALTER TABLE `seans`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT dla tabeli `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
