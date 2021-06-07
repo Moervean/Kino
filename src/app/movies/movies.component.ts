@@ -14,6 +14,7 @@ export class MoviesComponent implements OnInit {
   sortByNameVal = false;
   sortByDuartionVal = false;
   jsonvar;
+  title = '';
   moviesList: MovieModel[] = [];
   constructor(private mServices: moviesServices,
               private route: ActivatedRoute,
@@ -70,5 +71,11 @@ export class MoviesComponent implements OnInit {
     if (this.sortByNameVal){
       this.moviesList.sort((a, b) => a.name.localeCompare(b.name));
     }
+  }
+
+  onTitleChange(value) {
+    console.log(this.title);
+    console.log(value);
+
   }
 }
