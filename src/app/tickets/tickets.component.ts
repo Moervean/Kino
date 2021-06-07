@@ -59,25 +59,37 @@ export class TicketsComponent implements OnInit {
       this.freeSeats[this.pickedSeats[i]] = false;
     }
     var s=getCookie('koszyk');
-	var x=[];
-	if(s.length==0)x=[];
+	var x={seanse:[],miejsca:[]};
+	if(s.length==0)x={seanse:[],miejsca:[]};
 	else{
-		x=s.split(",");
+		x=JSON.parse(s);
 	}
 
     let reseved = '';
+	var ind=-1;
+	if(x==null)return;
+	(x.seanse).forEach((e,i)=>{
+		if(e==this.seance.id){
+			ind=i;
+		}
+	});
+	if(ind==-1){ind=(x.seanse).length;x.seanse.push(this.seance.id);x.miejsca.push([]);}
+	console.log("ind:"+ind);
     this.freeSeats.forEach((v, i) => {
       if (v === false){
-		x.push(i);
+		(x.miejsca)[ind].push(i);
         console.log(i.toString());
       }
     });
+	/*
 	var odp="";
 	x.forEach(function(e,i){
 		odp+=e;
 		if(i!=x.length-1)odp+=",";
-	});
-	setCookie('koszyk',odp,7);
+	});*/
+	console.log("set koszyk");
+	console.log(x);
+	setCookie('koszyk',JSON.stringify(x),7);
   }
 
   buyTicket(seatNumber: number) {

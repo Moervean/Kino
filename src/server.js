@@ -38,6 +38,7 @@ app.get("/movies", function (req, res) {
 });
 app.get("/movies/:id", function (req, res) {
   try {
+	  console.log("try movie");
     getMovieById(req.params.id).then((x) => {
       res.end(x);
       console.log("movies: " + x);
@@ -93,7 +94,7 @@ app.get("/seansList/:ids", function (req, res) {
 	  var a=req.params.ids;
 	  a=JSON.parse(a);
 	  
-    seansByIds(a.seanse).then((x) => {
+    seansByIds(a).then((x) => {
 		var xx=JSON.parse(x);
 		xx={seanse:x,miejsca:a.miejsca};
       res.end(JSON.stringify(xx));
@@ -534,12 +535,19 @@ let seansByIds = function (a) {
   return new Promise((reso, erro) => {
 	var aa=a;
 	var str="";
+	console.log("pobieranie seansy");
+	console.log(a);
+	if(aa==null)return;
+	if(aa.length==0)return;
 	aa.forEach((e,i)=>{
+		console.log("dla seansu");
 		str+="`id` = "+e+" ";
 		if(i!=aa.length-1)str+="OR ";
+		console.log(str);
 	});
+	console.log("SELECT * FROM `seans` WHERE "+str);
     connection.query(
-      "SELECT * FROM `seans` WHERE "+a,
+      "SELECT * FROM `seans` WHERE "+str,
       function (err, res, fields) {
         if (err) {
           throw "Linia 37 " + err.message;

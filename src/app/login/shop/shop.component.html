@@ -2,5 +2,19 @@
   <h2>Twoje rezerwacje w koszyku</h2>
   <div class="list-group" id="lista">
     
+	<div *ngFor="let s of lista" >
+		<div class="container border-own border-own-color">
+						  <div class="row">
+						    <div class="col-md-4"><img class="float-left" style="width:160px;height:180px" src="{{s.img}}"/></div>
+							<div class="col-md-8">
+							  {{s.nazwa}}
+							  <div class="row">
+								<div class="col-md-6">{{s.data}} {{s.czas}}</div>
+								<button style="cursor:pointer" (click)="del(s.id)" class="btn btn-danger float-right">Usuń</button>
+							  </div>
+							</div>
+						  </div>
+		</div>
+	</div>
   </div>
 </div>
