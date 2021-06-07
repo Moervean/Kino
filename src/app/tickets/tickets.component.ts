@@ -47,14 +47,14 @@ export class TicketsComponent implements OnInit {
 			  const seat = parseInt(v, 10);
 			  temp.freeSeats[seat] = false;
 			});
-		 
+
 		})
-	
+
 
   }
   dodaj(){
-	  	//Cookies.set('Message', 'Hello C-Sharp Corner')//set the cookie value  
-    //var CookieValue=Cookies.get('Message')//get the value from cookie  
+	  	//Cookies.set('Message', 'Hello C-Sharp Corner')//set the cookie value
+    //var CookieValue=Cookies.get('Message')//get the value from cookie
 	for (let i = 0; i < this.pickedSeats.length; i++){
       this.freeSeats[this.pickedSeats[i]] = false;
     }
@@ -64,7 +64,7 @@ export class TicketsComponent implements OnInit {
 	else{
 		x=s.split(",");
 	}
-	
+
     let reseved = '';
     this.freeSeats.forEach((v, i) => {
       if (v === false){
@@ -102,7 +102,6 @@ export class TicketsComponent implements OnInit {
     let reseved = '';
     this.freeSeats.forEach((v, i) => {
       if (v === false){
-        console.log(i.toString());
         reseved += i.toString();
         reseved += ',';
       }

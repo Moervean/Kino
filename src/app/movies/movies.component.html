@@ -10,9 +10,11 @@
 			style="height: fit-content; align-content: end"
 			(click)="sortByDuration()">Sortuj po czasie trwania
 	</button>
+  <input [(ngModel)]="title" (ngModelChange)="onTitleChange($event)" type="search" id="site-search" placeholder="Wyszukaj film po tytule" >
+
 	<div class = "overflow-auto" >
 	<div *ngFor="let movie of moviesList" >
-
+      <div *ngIf="(title == null || title == '') || (title != '' && movie.name.includes(title))" >
 	  <div class="row  align-items-center" style="margin: 35px; align-content: center">
 		<div>
 		<figure><img src="{{movie.img}}"></figure>
@@ -34,6 +36,7 @@
 				  style="height: fit-content"
 				  (click)="removeMovie(movie.name)">Usuń Film
 		  </button>
+    </div>
 		</div>
 
 	  </div>
