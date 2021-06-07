@@ -60,12 +60,13 @@ app.get("/seans/:id", function (req, res) {
   try {
     seansById(req.params.id).then((x) => {
       res.end(x);
-      console.log("seances: " + x);
+      console.log("movies: " + x);
     });
   } catch (err) {
     console.log("ERROR " + err);
   }
 });
+
 app.get("/roomsList", function (req, res) {
   try {
     roomsList().then((x) => {
@@ -91,7 +92,7 @@ app.get("/seansList/:ids", function (req, res) {
   try {
 	  var a=req.params.ids;
 	  a=JSON.parse(a);
-
+	  
     seansByIds(a.seanse).then((x) => {
 		var xx=JSON.parse(x);
 		xx={seanse:x,miejsca:a.miejsca};
@@ -202,26 +203,6 @@ app.post("/seansEdit/:id/:data", (req, res) => {
 
   res.send("Seans edytowany. Id: " + id + "\nDane: " + newSeans);
 });
-
-app.post("/buyTicket/:id/:data", (req, res) => {
-  const data=JSON.parse(req.params.data);
-  const id = req.params.id;
-
-  connection.query(
-    "UPDATE `seans` SET `zajeteMiejsca`=\"" +
-    data.reservedSeats +
-    "\" WHERE `id` = " +
-    id,
-    function (err, res, fields) {
-      if (err) {
-        console.log(err.message);
-      }
-    }
-  );
-
-  res.send("Seans edytowany. Id: " + id + "\nDane: " );
-});
-
 //rezerwacje
 // przesylane jest jako data (json string) token (usera), id_seansu i nr_miejsca
 //
@@ -262,8 +243,8 @@ app.post("/rezerwacjaAdd/:data", (req, res) => {
 		  return;
 	  }
     });
-
-
+	
+  
 
   //res.send("Dodano rezerwacje: " + rez);
 });
@@ -312,7 +293,7 @@ app.post("/login/:data", (req, res) => {
 			res.send(JSON.stringify({code:0,err:"Nie ma konta o podanym loginie"}));
 		  }else{
 			  if(res2[0].password == sha256(user.password)){
-
+				  
 				  var token=generateToken();
 				  console.log("wygenerowany token: "+token)
 				  res.send(JSON.stringify({code:1,msg:"Pomyślnie zalogowano",token:token}));
@@ -330,8 +311,69 @@ app.post("/login/:data", (req, res) => {
 		  }
 	});
 });
+app.get("/reservedSeats/:id", (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+	connection.query("SELECT * FROM `rezerwacje` WHERE `id_seans` = "+id+"", function (err2, res2, fields2) {
+		  if (err2) {
+			throw "Linia 193 " + err2.message;
+		  }
+		  if (!res2 || res2.length == 0){
+			res.send(JSON.stringify({code:1,seats:[]}));
+		  }else{
+			console.log("Znaleziono zajete miejsca");
+			var s=[];
+			res2.forEach(function(e,i){
+				s.push(e.nr_miejsca);
+			});
+			console.log("zarezerwowane: "+JSON.stringify(s));
+			res.send(JSON.stringify({code:1,seats:s}));
+		  }
+	});
+});
+app.post("/buyTicket/:id/:data", (req, res) => {
+  const data=JSON.parse(req.params.data);
+  const id = req.params.id;
+  var miejsca=data.reservedSeats;
+  var x=miejsca.split(",");
+  if(x==null||x.length==0)return;
+  const token = data.token;
+  console.log(token);
+	connection.query("SELECT * FROM `users` WHERE `token` = \""+token+"\"", function (err2, res2, fields2) {
+		  if (err2) {
+			throw "Linia 193 " + err2.message;
+		  }
+		  if (!res2 || res2.length == 0){
+			res.send(JSON.stringify({code:0,err:"Sesja wygasła. Zaloguj się ponownie"}));
+			return;
+		  }else{
+			console.log("Znaleziono konto");
+			var u=res2[0];                     /// usuwanie id ze wzgledow bezpieczenstwa i wyslanie loginu i emaila do klienta
+			//u.id=null;
+			var odp=1;
+			x.forEach(function(e){
+				if(e==null||e.length==0)return;
+				console.log("\nINSERT INTO `rezerwacje`( `id_seans`,`id_login`,`nr_miejsca`) VALUES ("+id+","+u.id+","+e+")\n");
+			  connection.query(
+				"INSERT INTO `rezerwacje`( `id_seans`,`id_login`,`nr_miejsca`) VALUES ("+id+","+u.id+","+e+")",
+				function (err, res, fields) {
+				  if (err) {
+					console.log(err.message);
+					odp=0;
+				  }
+				}
+			  );
+			});
+			if(odp){
+				res.send(JSON.stringify({code:1,msg:"Pomyślnie zakupiono bilety"}));
+			}else{
+				res.send(JSON.stringify({code:0,msg:"Nastąpił nieoczekiwany błąd"}));
+			}
+			//res.send(JSON.stringify({code:1,msg:"Pomyślnie zalogowano",user:u}));
+		  }
+	});
 
-
+});
 app.get("/getUserData/:token", (req, res) => {
   const token = req.params.token;
   console.log(token);
@@ -345,7 +387,7 @@ app.get("/getUserData/:token", (req, res) => {
 			console.log("Znaleziono konto");
 			var u=res2[0];                     /// usuwanie id ze wzgledow bezpieczenstwa i wyslanie loginu i emaila do klienta
 			u.id=null;
-
+			
 			res.send(JSON.stringify({code:1,msg:"Pomyślnie zalogowano",user:u}));
 		  }
 	});
