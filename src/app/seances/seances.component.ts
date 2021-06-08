@@ -16,6 +16,7 @@ import {moviesServices} from '../services/movies.services';
 import {ActivatedRoute, Router} from '@angular/router';
 import { DatePipe } from '@angular/common';
 import {MonthPipePipe} from '../month.pipe';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-seances',
@@ -28,10 +29,13 @@ export class SeancesComponent implements OnInit {
   @ViewChild('seancesList') ref: ElementRef;
   date: string = this.datapipe.transform(new Date(),'yyyy-MM-dd');
   daySeances: SeanceModel[] = [];
+  nickname;
   specificSeances: string[] = [];
   movies: MovieModel[] = [];
   seancesMap = new Map();
   mode = 0;
+  login;
+  title = '';
   editSeance: SeanceModel;
   popularity = new Map<any,any>();
   seatsInSeance: number = 0;
@@ -42,9 +46,36 @@ export class SeancesComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private datapipe: DatePipe,
-              private searchPipe: MonthPipePipe) {
+              private searchPipe: MonthPipePipe,
+              private http: HttpClient) {
     this.movies = this.msService.movieList;
     this.getSeances();
+    this.http.get('http://localhost:8080/getUserData/' + this.getCookie("token")).subscribe((data) => {
+      console.log(data.user.login);
+      this.login = data.user.login;
+
+    });
+  }
+
+  onTitleChange(value) {
+    console.log(this.title);
+
+  }
+
+  getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
   }
 
   ngOnInit(): void {

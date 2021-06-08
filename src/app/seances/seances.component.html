@@ -2,8 +2,10 @@
 <div>
   <input type="date" [(ngModel)]="date" (ngModelChange)="getSeances()">
 </div>
+  <input [(ngModel)]="title" (ngModelChange)="onTitleChange($event)" type="search" id="site-search" placeholder="Wyszukaj film po tytule" >
   <div *ngFor="let movie of movies">
-    <div *ngIf="seancesMap.get(movie.name) !== undefined">
+    <div *ngIf="seancesMap.get(movie.name) !== undefined && (title == null || title == '') || (title != '' && movie.name.includes(title))">
+
       <div class="row  align-items-center" style="margin: 35px; align-content: center">
         <img src="{{movie.img}}">
         <div style="margin: 35px">
@@ -28,7 +30,7 @@
     </div>
   </div>
 
-<div class="d-flex justify-content-end">
+<div class="d-flex justify-content-end" *ngIf="login === 'admin'">
   <div class="btn-group-vertical">
   <button class="btn btn-success"
           style="height: fit-content;margin-right: 35px; width: 150px"

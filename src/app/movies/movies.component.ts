@@ -3,6 +3,7 @@ import {moviesServices} from '../services/movies.services';
 import {MovieModel} from '../Models/movie.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
+import {HeaderComponent} from '../header/header.component';
 
 @Component({
   selector: 'app-movies',
@@ -16,6 +17,7 @@ export class MoviesComponent implements OnInit {
   jsonvar;
   title = '';
   moviesList: MovieModel[] = [];
+  login;
   constructor(private mServices: moviesServices,
               private route: ActivatedRoute,
               private router: Router,
@@ -26,9 +28,30 @@ export class MoviesComponent implements OnInit {
     //   );
     //
     // });
+    this.http.get('http://localhost:8080/getUserData/' + this.getCookie("token")).subscribe((data) => {
+      console.log(data.user.login);
+      this.login = data.user.login;
+
+    });
   }
 
-  ngOnInit():void {
+  getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
+  ngOnInit(): void {
     this.moviesList = this.mServices.movieList;
   }
 
@@ -75,7 +98,6 @@ export class MoviesComponent implements OnInit {
 
   onTitleChange(value) {
     console.log(this.title);
-    console.log(value);
 
   }
 }
