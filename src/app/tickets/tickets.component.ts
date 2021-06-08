@@ -47,14 +47,14 @@ export class TicketsComponent implements OnInit {
 			  const seat = parseInt(v, 10);
 			  temp.freeSeats[seat] = false;
 			});
-		 
+
 		})
-	
+
 
   }
   dodaj(){
-	  	//Cookies.set('Message', 'Hello C-Sharp Corner')//set the cookie value  
-    //var CookieValue=Cookies.get('Message')//get the value from cookie  
+	  	//Cookies.set('Message', 'Hello C-Sharp Corner')//set the cookie value
+    //var CookieValue=Cookies.get('Message')//get the value from cookie
 	for (let i = 0; i < this.pickedSeats.length; i++){
       this.freeSeats[this.pickedSeats[i]] = false;
     }
@@ -64,7 +64,7 @@ export class TicketsComponent implements OnInit {
 	else{
 		x=JSON.parse(s);
 	}
-	
+
     let reseved = '';
 	var ind=-1;
 	if(x==null)return;
@@ -75,10 +75,11 @@ export class TicketsComponent implements OnInit {
 	});
 	if(ind==-1){ind=(x.seanse).length;x.seanse.push(this.seance.id);x.miejsca.push([]);}
 	console.log("ind:"+ind);
-    this.pickedSeats.forEach((v, i) => {
-		(x.miejsca)[ind].push(v);
-        console.log(v.toString());
-      
+    this.freeSeats.forEach((v, i) => {
+      if (v === false){
+		(x.miejsca)[ind].push(i);
+        console.log(i.toString());
+      }
     });
 	/*
 	var odp="";
@@ -89,7 +90,6 @@ export class TicketsComponent implements OnInit {
 	console.log("set koszyk");
 	console.log(x);
 	setCookie('koszyk',JSON.stringify(x),7);
-	this.pickedSeats=[];
   }
 
   buyTicket(seatNumber: number) {
@@ -112,11 +112,11 @@ export class TicketsComponent implements OnInit {
     }
 
     let reseved = '';
-    this.pickedSeats.forEach((v, i) => {
-        console.log(v.toString());
-        reseved += v.toString();
+    this.freeSeats.forEach((v, i) => {
+      if (v === false){
+        reseved += i.toString();
         reseved += ',';
-      
+      }
     });
     this.seance.reservedSeats = reseved;
     const headers = new HttpHeaders()
