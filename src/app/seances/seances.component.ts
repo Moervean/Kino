@@ -50,11 +50,13 @@ export class SeancesComponent implements OnInit {
               private http: HttpClient) {
     this.movies = this.msService.movieList;
     this.getSeances();
-    this.http.get('http://localhost:8080/getUserData/' + this.getCookie("token")).subscribe((data) => {
-      console.log(data.user.login);
-      this.login = data.user.login;
-
-    });
+	var temp=this;
+    	$.get( 'http://localhost:8080/getUserData/' + this.getCookie("token"), function(data) {
+		  		data=JSON.parse(data);
+				  console.log(data);
+				  temp.login = data.user.login;
+		 
+		});
   }
 
   onTitleChange(value) {

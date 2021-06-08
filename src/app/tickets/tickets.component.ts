@@ -112,11 +112,10 @@ export class TicketsComponent implements OnInit {
     }
 
     let reseved = '';
-    this.freeSeats.forEach((v, i) => {
-      if (v === false){
-        reseved += i.toString();
+    this.pickedSeats.forEach((v, i) => {
+        reseved += v.toString();
         reseved += ',';
-      }
+      
     });
     this.seance.reservedSeats = reseved;
     const headers = new HttpHeaders()

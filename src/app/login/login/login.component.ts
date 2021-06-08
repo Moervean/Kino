@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
 
 	login(){
 		var temp=this;
+		console.log("try login");
 		$('#msg').text('');
 		$('#err').text('');
 		var l=$('#login').val();

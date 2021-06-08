@@ -28,11 +28,17 @@ export class MoviesComponent implements OnInit {
     //   );
     //
     // });
-    this.http.get('http://localhost:8080/getUserData/' + this.getCookie("token")).subscribe((data) => {
-      console.log(data.user.login);
-      this.login = data.user.login;
+	var temp=this;
+	$.get( 'http://localhost:8080/getUserData/' + this.getCookie("token"), function(data) {
+		  		data=JSON.parse(data);
+				  console.log(data);
+				  temp.login = data.user.login;
+		 
+		});
+   // this.http.get('http://localhost:8080/getUserData/' + this.getCookie("token")).subscribe((data) => {
 
-    });
+
+   // });
   }
 
   getCookie(cname) {
@@ -69,7 +75,7 @@ export class MoviesComponent implements OnInit {
   addMovie() {
     this.router.navigate(['/movies/add']);
   }
-
+// sort a i b do zamiany i bool gdzies
   sortByName() {
     console.log(this.mServices.movieList);
     this.sortByNameVal = !this.sortByNameVal;
