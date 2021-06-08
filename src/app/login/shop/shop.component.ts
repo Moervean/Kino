@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser'
+import { DomSanitizer } from '@angular/platform-browser';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 @Component({
   selector: 'app-shop',
   templateUrl: './shop.component.html',
@@ -8,10 +9,43 @@ import { DomSanitizer } from '@angular/platform-browser'
 
 export class ShopComponent implements OnInit {
   lista: Array<any>=[];
-  constructor(private sanitizer: DomSanitizer) { }
+  zakupione: Array<any>=[];
+  constructor(private sanitizer: DomSanitizer,private http: HttpClient) { }
 
   ngOnInit(): void {
 	  this.load();
+	  this.loadZakupy();
+  }
+  finalizeShop():void{
+	var x= getCookie('koszyk');
+	  var msg="";
+	  if(x.length==0){
+		  //msg="Brak rezerwacji w koszyku";
+		  //$("#lista").html(msg);
+		  return;
+	  }
+	  console.log(x);
+	  var y=JSON.parse(x); 
+	  
+    const headers = new HttpHeaders()
+      .set('Content-Type', 'application/json');
+	console.log(y);
+	y.seanse.forEach((e,i)=>{
+		var r=JSON.stringify(y.miejsca[i]).replace("[","").replace("]","");
+		const httpOptions = {
+		  reservedSeats: r,
+		  token: getCookie('token')
+		};
+		this.http.post('http://localhost:8080/buyTicket/' + e+ '/' + encodeURIComponent(JSON.stringify(httpOptions)),
+		  {headers}).subscribe(data => {
+
+		});
+	});
+	setCookie("koszyk",1,-1);
+	this.lista=[];
+	msg="Wykupiono rezerwacje z koszyka";
+	$("#lista").html(msg);
+	this.loadZakupy();
   }
 	del(id):void{
 	  var x= getCookie('koszyk');
@@ -36,6 +70,33 @@ export class ShopComponent implements OnInit {
 		  this.lista=[];
 	  }else 
 	  this.load();
+  
+	}
+	loadZakupy():void{
+	  var temp=this;
+	  //zakupione
+	  console.log("zakupione");
+	  $.get( "http://localhost:8080/zakupione/"+getCookie("token"), function(data) {
+		  var d=JSON.parse(data);
+			console.log("zakupione2");
+		  var t=temp;
+		  d.forEach((el,ind)=>{
+			  $.get( "http://localhost:8080/seans/"+el.id_seans, function(data2) {
+				  var d2=JSON.parse(data2);
+					console.log("zakupione3");
+					d2=d2[0];
+					console.log(d2);
+					
+				  $.get( "http://localhost:8080/movies/"+d2.movieId, function(dd) {
+					  console.log("nr"+dd);
+					  dd=JSON.parse(dd);
+					  dd=dd[0];
+					  temp.zakupione.push({nazwa:dd.nazwa,czas:d2.czas,data:d2.data,img:dd.img,miejsce:el.nr_miejsca});
+				  });
+			  });
+		  });
+
+	  });
 	}
 	load():void{
 	  var x= getCookie('koszyk');
@@ -49,6 +110,10 @@ export class ShopComponent implements OnInit {
 	  var y=JSON.parse(x); 
 	  console.log(y);
 	  var temp=this;
+
+	  
+	  
+	  //koszyk
 	  $.get( "http://localhost:8080/seansList/"+JSON.stringify(y.seanse), function(data) {
 		  console.log(data);
 		  data=JSON.parse(data);
@@ -99,7 +164,16 @@ export class ShopComponent implements OnInit {
 							</div>\
 						  </div>\
 						</div>';*/
-						temp.lista.push({nazwa:aaa[0].nazwa,data:e.data,czas:e.czas,img:aaa[0].img});
+						var ind=-1;
+						console.log(y);
+						console.log(e);
+						y.seanse.forEach((ee,ii)=>{if(ee==e.id)ind=ii;});
+						//if(ind==-1)return;
+						var str="";
+						console.log(y.miejsca);
+						y.miejsca[ind].forEach((e,i)=>{
+						str+=e;if(i!=y.miejsca[ind].length-1)str+=",";});
+						temp.lista.push({nazwa:aaa[0].nazwa,data:e.data,czas:e.czas,img:aaa[0].img,miejsca:str});
 						//temp.lista= temp.sanitizer.bypassSecurityTrustHtml(ress);
 			   });
 			 

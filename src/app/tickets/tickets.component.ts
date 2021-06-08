@@ -75,11 +75,10 @@ export class TicketsComponent implements OnInit {
 	});
 	if(ind==-1){ind=(x.seanse).length;x.seanse.push(this.seance.id);x.miejsca.push([]);}
 	console.log("ind:"+ind);
-    this.freeSeats.forEach((v, i) => {
-      if (v === false){
-		(x.miejsca)[ind].push(i);
-        console.log(i.toString());
-      }
+    this.pickedSeats.forEach((v, i) => {
+		(x.miejsca)[ind].push(v);
+        console.log(v.toString());
+      
     });
 	/*
 	var odp="";
@@ -90,6 +89,7 @@ export class TicketsComponent implements OnInit {
 	console.log("set koszyk");
 	console.log(x);
 	setCookie('koszyk',JSON.stringify(x),7);
+	this.pickedSeats=[];
   }
 
   buyTicket(seatNumber: number) {
@@ -112,12 +112,11 @@ export class TicketsComponent implements OnInit {
     }
 
     let reseved = '';
-    this.freeSeats.forEach((v, i) => {
-      if (v === false){
-        console.log(i.toString());
-        reseved += i.toString();
+    this.pickedSeats.forEach((v, i) => {
+        console.log(v.toString());
+        reseved += v.toString();
         reseved += ',';
-      }
+      
     });
     this.seance.reservedSeats = reseved;
     const headers = new HttpHeaders()

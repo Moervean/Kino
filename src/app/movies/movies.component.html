@@ -1,5 +1,6 @@
 <body>
-<div class="container p-3 my-3 bg-dark text-white">
+<div class="container p-3 my-3 bg-dark text-white" style="overflow-y: scroll;
+    height: 78%;">
 	<h3 style = "color: white">Sortowanie</h3>
 
 	<button class="btn btn-primary btn-custom"
@@ -10,6 +11,13 @@
 			style="height: fit-content; align-content: end"
 			(click)="sortByDuration()">Sortuj po czasie trwania
 	</button>
+		<div class="d-flex justify-content-end">
+	  <button class="btn btn-success"
+			  style="height: fit-content;
+					margin-right: 35px"
+			  (click)="addMovie()">Dodaj Film
+	  </button>
+	</div>
 	<div class = "overflow-auto" >
 	<div *ngFor="let movie of moviesList" >
 
@@ -40,12 +48,6 @@
 	</div>
 	</div>
 
-	<div class="d-flex justify-content-end">
-	  <button class="btn btn-success"
-			  style="height: fit-content;
-					margin-right: 35px"
-			  (click)="addMovie()">Dodaj Film
-	  </button>
-	</div>
+
 </div>
 </body>

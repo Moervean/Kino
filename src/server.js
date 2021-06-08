@@ -1,9 +1,9 @@
 var mysql = require("mysql");
 var express = require("express");
 var app = express();
-var sha256 = require('js-sha256');
-var crypto = require('crypto');
-var cors = require('cors');
+var sha256 = require("js-sha256");
+var crypto = require("crypto");
+var cors = require("cors");
 app.use(cors());
 let connection = mysql.createConnection({
   connectionLimit: 10,
@@ -38,8 +38,20 @@ app.get("/movies", function (req, res) {
 });
 app.get("/movies/:id", function (req, res) {
   try {
-	  console.log("try movie");
+    console.log("try movie");
     getMovieById(req.params.id).then((x) => {
+      res.end(x);
+      console.log("movies: " + x);
+    });
+  } catch (err) {
+    console.log("ERROR " + err);
+  }
+});
+
+app.get("/zakupione/:token", function (req, res) {
+  try {
+    console.log("try zakupy");
+    zakupione(req.params.token).then((x) => {
       res.end(x);
       console.log("movies: " + x);
     });
@@ -91,12 +103,12 @@ app.get("/roomsById/:id", function (req, res) {
 
 app.get("/seansList/:ids", function (req, res) {
   try {
-	  var a=req.params.ids;
-	  a=JSON.parse(a);
-	  
+    var a = req.params.ids;
+    a = JSON.parse(a);
+
     seansByIds(a).then((x) => {
-		var xx=JSON.parse(x);
-		xx={seanse:x,miejsca:a.miejsca};
+      var xx = JSON.parse(x);
+      xx = { seanse: x, miejsca: a.miejsca };
       res.end(JSON.stringify(xx));
       console.log("movies: " + x);
     });
@@ -114,13 +126,13 @@ app.post("/movieAdd", (req, res) => {
   console.log(movie);
 
   connection.query(
-    "INSERT INTO `movie`( `nazwa`, `img`, `czasTrwania`, `ocena`) VALUES (\"" +
+    'INSERT INTO `movie`( `nazwa`, `img`, `czasTrwania`, `ocena`) VALUES ("' +
       movie.nazwa +
-      "\",\"" +
+      '","' +
       movie.img +
-      "\",\"" +
+      '","' +
       movie.czasTrwania +
-      "\"," +
+      '",' +
       movie.ocena +
       ")",
     function (err, res, fields) {
@@ -134,29 +146,29 @@ app.post("/movieAdd", (req, res) => {
 });
 //INSERT INTO `movie`(`id`, `nazwa`, `img`, `czasTrwania`, `ocena`) VALUES ([value-1],[value-2],[value-3],[value-4],[value-5])
 //UPDATE `movie` SET `id`=[value-1],`nazwa`=[value-2],`img`=[value-3],`czasTrwania`=[value-4],`ocena`=[value-5] WHERE 1
-app.post('/movieEdit/:id/:data', (req, res) => {
-	const data=JSON.parse(req.params.data);
-    const id = req.params.id;
-    const nazwa = data.nazwa;
-    const czasTrwania = data.czasTrwania;
-    const ocena = data.ocena;
+app.post("/movieEdit/:id/:data", (req, res) => {
+  const data = JSON.parse(req.params.data);
+  const id = req.params.id;
+  const nazwa = data.nazwa;
+  const czasTrwania = data.czasTrwania;
+  const ocena = data.ocena;
 
   connection.query(
-    "UPDATE movie SET nazwa=\"" +
-    nazwa +
-    "\", czasTrwania=\"" +
-    czasTrwania +
-    "\",ocena=" +
-    ocena +
-    " WHERE id = " +
-    id,
+    'UPDATE movie SET nazwa="' +
+      nazwa +
+      '", czasTrwania="' +
+      czasTrwania +
+      '",ocena=' +
+      ocena +
+      " WHERE id = " +
+      id,
     function (err, res, fields) {
       if (err) {
         console.log(err.message);
       }
     }
   );
-    res.send('Movie edytowany. Id: '+id+'\nDane: '+nazwa);
+  res.send("Movie edytowany. Id: " + id + "\nDane: " + nazwa);
 });
 
 app.post("/seansAdd/:data", (req, res) => {
@@ -166,11 +178,11 @@ app.post("/seansAdd/:data", (req, res) => {
   connection.query(
     "INSERT INTO `seans`( `movieId`, `data`, `czas`, `roomId`) VALUES (" +
       seans.movieId +
-      ",\"" +
+      ',"' +
       seans.data +
-      "\",\"" +
+      '","' +
       seans.czas +
-      "\"," +
+      '",' +
       seans.roomId +
       ")",
     function (err, res, fields) {
@@ -183,15 +195,17 @@ app.post("/seansAdd/:data", (req, res) => {
   res.send("Dodano film: " + seans);
 });
 app.post("/seansEdit/:id/:data", (req, res) => {
-  const data=JSON.parse(req.params.data);
+  const data = JSON.parse(req.params.data);
   const id = req.params.id;
 
   connection.query(
     "UPDATE `seans` SET `movieId`=" +
       data.movieId +
-      ",`data`=\""+data.data+"\",`czas`=\"" +
+      ',`data`="' +
+      data.data +
+      '",`czas`="' +
       data.czas +
-      "\",`roomId`=" +
+      '",`roomId`=' +
       data.roomId +
       " WHERE `id` = " +
       id,
@@ -210,42 +224,53 @@ app.post("/seansEdit/:id/:data", (req, res) => {
 app.post("/rezerwacjaAdd/:data", (req, res) => {
   const rez = JSON.parse(req.params.data);
   console.log(rez);
-  connection.query("SELECT * FROM `rezerwacje` WHERE nr_miejsca = "+rez.nr_miejsca, function (err, res, fields) {
+  connection.query(
+    "SELECT * FROM `rezerwacje` WHERE nr_miejsca = " + rez.nr_miejsca,
+    function (err, res, fields) {
       if (err) {
         throw "Linia 193 " + err.message;
       }
-      if (!res || res.length == 0){
-		  try {
-			userByToken(rez.token).then((x) => {
-			  //res.end(x);
-			  console.log("user: " + x);
-			  var user=JSON.parse(x);
-			  connection.query(
-				"INSERT INTO `seans`( `id_login`, `id_seans`, `nr_miejsca`) VALUES (\"" +
-				  user.id +
-				  "\"," +
-				  rez.id_seans +
-				  "," +
-				  rez.nr_miejsca +
-				  ")",
-				function (err, res, fields) {
-				  if (err) {
-					console.log(err.message);
-				  }
-				  res.send(JSON.stringify({code:1,msg:"Zarezerwowano miejsce nr: "+rez.nr_miejsca}));
-				}
-			  );
-			});
-		  } catch (err) {
-			console.log("ERROR " + err);
-		  }
-	  }else{
-		  res.send(JSON.stringify({code:0,err:"Miejsce o tym numerze jest juz zajęte"}));
-		  return;
-	  }
-    });
-	
-  
+      if (!res || res.length == 0) {
+        try {
+          userByToken(rez.token).then((x) => {
+            //res.end(x);
+            console.log("user: " + x);
+            var user = JSON.parse(x);
+            connection.query(
+              'INSERT INTO `seans`( `id_login`, `id_seans`, `nr_miejsca`) VALUES ("' +
+                user.id +
+                '",' +
+                rez.id_seans +
+                "," +
+                rez.nr_miejsca +
+                ")",
+              function (err, res, fields) {
+                if (err) {
+                  console.log(err.message);
+                }
+                res.send(
+                  JSON.stringify({
+                    code: 1,
+                    msg: "Zarezerwowano miejsce nr: " + rez.nr_miejsca,
+                  })
+                );
+              }
+            );
+          });
+        } catch (err) {
+          console.log("ERROR " + err);
+        }
+      } else {
+        res.send(
+          JSON.stringify({
+            code: 0,
+            err: "Miejsce o tym numerze jest juz zajęte",
+          })
+        );
+        return;
+      }
+    }
+  );
 
   //res.send("Dodano rezerwacje: " + rez);
 });
@@ -253,166 +278,214 @@ app.post("/rezerwacjaAdd/:data", (req, res) => {
 app.get("/register/:data", (req, res) => {
   const user = JSON.parse(req.params.data);
   console.log(user);
-	connection.query("SELECT * FROM `users` WHERE `email` = \""+user.email+"\" OR `login` = \""+user.login+"\"", function (err1, res1, fields1) {
-		  if (err1) {
-			throw "Linia 193 " + err1.message;
-		  }
-		  if (!res1|| res1.length == 0){
-			connection.query(
-				"INSERT INTO `users`( `login`, `password`,`email`) VALUES (\"" +
-				  user.login +
-				  "\",\"" +
-				  sha256(user.password) +
-				  "\",\"" +
-				  user.email +
-				  "\")",
-				function (err2, res2, fields2) {
-				  if (err2) {
-					console.log(err2.message);
-				  }
-				  res.status(200);
-				  res.send(JSON.stringify({code:1,msg:"Zarejestrowano konto. Przekierowanie nastąpi za 5 sekund. <a href='/login' style='font-size:13px'>(klik jeśli nie przeniosło)</a>"}));
-				  return;
-				}
-			  );
-		  }else{
-			  res.status(200);
-			  res.send(JSON.stringify({code:0,err:"Email lub login są już w użyciu"}));
-			  return;
-		  }
-	});
+  connection.query(
+    'SELECT * FROM `users` WHERE `email` = "' +
+      user.email +
+      '" OR `login` = "' +
+      user.login +
+      '"',
+    function (err1, res1, fields1) {
+      if (err1) {
+        throw "Linia 193 " + err1.message;
+      }
+      if (!res1 || res1.length == 0) {
+        connection.query(
+          'INSERT INTO `users`( `login`, `password`,`email`) VALUES ("' +
+            user.login +
+            '","' +
+            sha256(user.password) +
+            '","' +
+            user.email +
+            '")',
+          function (err2, res2, fields2) {
+            if (err2) {
+              console.log(err2.message);
+            }
+            res.status(200);
+            res.send(
+              JSON.stringify({
+                code: 1,
+                msg: "Zarejestrowano konto. Przekierowanie nastąpi za 5 sekund. <a href='/login' style='font-size:13px'>(klik jeśli nie przeniosło)</a>",
+              })
+            );
+            return;
+          }
+        );
+      } else {
+        res.status(200);
+        res.send(
+          JSON.stringify({ code: 0, err: "Email lub login są już w użyciu" })
+        );
+        return;
+      }
+    }
+  );
 });
 
 app.post("/login/:data", (req, res) => {
   const user = JSON.parse(req.params.data);
   console.log(user);
-	connection.query("SELECT * FROM `users` WHERE `login` = \""+user.login+"\"", function (err2, res2, fields2) {
-		  if (err2) {
-			throw "Linia 193 " + err2.message;
-		  }
-		  if (!res2 || res2.length == 0){
-			res.send(JSON.stringify({code:0,err:"Nie ma konta o podanym loginie"}));
-		  }else{
-			  if(res2[0].password == sha256(user.password)){
-				  
-				  var token=generateToken();
-				  console.log("wygenerowany token: "+token)
-				  res.send(JSON.stringify({code:1,msg:"Pomyślnie zalogowano",token:token}));
-				   connection.query(
-						"UPDATE `users` SET `token`=\"" + token + "\" WHERE `id` = " + res2[0].id,
-						function (err, res, fields) {
-						  if (err) {
-							console.log(err.message);
-						  }
-						}
-					  );
-			  }else{
-				  res.send(JSON.stringify({code:0,err:"Podano błędne hasło"}));
-			  }
-		  }
-	});
+  connection.query(
+    'SELECT * FROM `users` WHERE `login` = "' + user.login + '"',
+    function (err2, res2, fields2) {
+      if (err2) {
+        throw "Linia 193 " + err2.message;
+      }
+      if (!res2 || res2.length == 0) {
+        res.send(
+          JSON.stringify({ code: 0, err: "Nie ma konta o podanym loginie" })
+        );
+      } else {
+        if (res2[0].password == sha256(user.password)) {
+          var token = generateToken();
+          console.log("wygenerowany token: " + token);
+          res.send(
+            JSON.stringify({
+              code: 1,
+              msg: "Pomyślnie zalogowano",
+              token: token,
+            })
+          );
+          connection.query(
+            'UPDATE `users` SET `token`="' +
+              token +
+              '" WHERE `id` = ' +
+              res2[0].id,
+            function (err, res, fields) {
+              if (err) {
+                console.log(err.message);
+              }
+            }
+          );
+        } else {
+          res.send(JSON.stringify({ code: 0, err: "Podano błędne hasło" }));
+        }
+      }
+    }
+  );
 });
 app.get("/reservedSeats/:id", (req, res) => {
   const id = req.params.id;
   console.log(id);
-	connection.query("SELECT * FROM `rezerwacje` WHERE `id_seans` = "+id+"", function (err2, res2, fields2) {
-		  if (err2) {
-			throw "Linia 193 " + err2.message;
-		  }
-		  if (!res2 || res2.length == 0){
-			res.send(JSON.stringify({code:1,seats:[]}));
-		  }else{
-			console.log("Znaleziono zajete miejsca");
-			var s=[];
-			res2.forEach(function(e,i){
-				s.push(e.nr_miejsca);
-			});
-			console.log("zarezerwowane: "+JSON.stringify(s));
-			res.send(JSON.stringify({code:1,seats:s}));
-		  }
-	});
+  connection.query(
+    "SELECT * FROM `rezerwacje` WHERE `id_seans` = " + id + "",
+    function (err2, res2, fields2) {
+      if (err2) {
+        throw "Linia 193 " + err2.message;
+      }
+      if (!res2 || res2.length == 0) {
+        res.send(JSON.stringify({ code: 1, seats: [] }));
+      } else {
+        console.log("Znaleziono zajete miejsca");
+        var s = [];
+        res2.forEach(function (e, i) {
+          s.push(e.nr_miejsca);
+        });
+        console.log("zarezerwowane: " + JSON.stringify(s));
+        res.send(JSON.stringify({ code: 1, seats: s }));
+      }
+    }
+  );
 });
 app.post("/buyTicket/:id/:data", (req, res) => {
-  const data=JSON.parse(req.params.data);
+  const data = JSON.parse(req.params.data);
   const id = req.params.id;
-  var miejsca=data.reservedSeats;
-  var x=miejsca.split(",");
-  if(x==null||x.length==0)return;
+  var miejsca = data.reservedSeats;
+  var x = miejsca.split(",");
+  if (x == null || x.length == 0) return;
   const token = data.token;
   console.log(token);
-	connection.query("SELECT * FROM `users` WHERE `token` = \""+token+"\"", function (err2, res2, fields2) {
-		  if (err2) {
-			throw "Linia 193 " + err2.message;
-		  }
-		  if (!res2 || res2.length == 0){
-			res.send(JSON.stringify({code:0,err:"Sesja wygasła. Zaloguj się ponownie"}));
-			return;
-		  }else{
-			console.log("Znaleziono konto");
-			var u=res2[0];                     /// usuwanie id ze wzgledow bezpieczenstwa i wyslanie loginu i emaila do klienta
-			//u.id=null;
-			var odp=1;
-			x.forEach(function(e){
-				if(e==null||e.length==0)return;
-				console.log("\nINSERT INTO `rezerwacje`( `id_seans`,`id_login`,`nr_miejsca`) VALUES ("+id+","+u.id+","+e+")\n");
-			  connection.query(
-				"INSERT INTO `rezerwacje`( `id_seans`,`id_login`,`nr_miejsca`) VALUES ("+id+","+u.id+","+e+")",
-				function (err, res, fields) {
-				  if (err) {
-					console.log(err.message);
-					odp=0;
-				  }
-				}
-			  );
-			});
-			if(odp){
-				res.send(JSON.stringify({code:1,msg:"Pomyślnie zakupiono bilety"}));
-			}else{
-				res.send(JSON.stringify({code:0,msg:"Nastąpił nieoczekiwany błąd"}));
-			}
-			//res.send(JSON.stringify({code:1,msg:"Pomyślnie zalogowano",user:u}));
-		  }
-	});
-
+  connection.query(
+    'SELECT * FROM `users` WHERE `token` = "' + token + '"',
+    function (err2, res2, fields2) {
+      if (err2) {
+        throw "Linia 193 " + err2.message;
+      }
+      if (!res2 || res2.length == 0) {
+        res.send(
+          JSON.stringify({
+            code: 0,
+            err: "Sesja wygasła. Zaloguj się ponownie",
+          })
+        );
+        return;
+      } else {
+        console.log("Znaleziono konto");
+        var u = res2[0]; /// usuwanie id ze wzgledow bezpieczenstwa i wyslanie loginu i emaila do klienta
+        //u.id=null;
+        var odp = 1;
+        x.forEach(function (e) {
+          if (e == null || e.length == 0) return;
+          console.log(
+            "\nINSERT INTO `rezerwacje`( `id_seans`,`id_login`,`nr_miejsca`) VALUES (" +
+              id +
+              "," +
+              u.id +
+              "," +
+              e +
+              ")\n"
+          );
+          connection.query(
+            "INSERT INTO `rezerwacje`( `id_seans`,`id_login`,`nr_miejsca`) VALUES (" +
+              id +
+              "," +
+              u.id +
+              "," +
+              e +
+              ")",
+            function (err, res, fields) {
+              if (err) {
+                console.log(err.message);
+                odp = 0;
+              }
+            }
+          );
+        });
+        if (odp) {
+          res.send(
+            JSON.stringify({ code: 1, msg: "Pomyślnie zakupiono bilety" })
+          );
+        } else {
+          res.send(
+            JSON.stringify({ code: 0, msg: "Nastąpił nieoczekiwany błąd" })
+          );
+        }
+        //res.send(JSON.stringify({code:1,msg:"Pomyślnie zalogowano",user:u}));
+      }
+    }
+  );
 });
 app.get("/getUserData/:token", (req, res) => {
   const token = req.params.token;
   console.log(token);
-	connection.query("SELECT * FROM `users` WHERE `token` = \""+token+"\"", function (err2, res2, fields2) {
-		  if (err2) {
-			throw "Linia 193 " + err2.message;
-		  }
-		  if (!res2 || res2.length == 0){
-			res.send(JSON.stringify({code:0,err:"Sesja wygasła. Zaloguj się ponownie"}));
-		  }else{
-			console.log("Znaleziono konto");
-			var u=res2[0];                     /// usuwanie id ze wzgledow bezpieczenstwa i wyslanie loginu i emaila do klienta
-			u.id=null;
-			
-			res.send(JSON.stringify({code:1,msg:"Pomyślnie zalogowano",user:u}));
-		  }
-	});
+  connection.query(
+    'SELECT * FROM `users` WHERE `token` = "' + token + '"',
+    function (err2, res2, fields2) {
+      if (err2) {
+        throw "Linia 193 " + err2.message;
+      }
+      if (!res2 || res2.length == 0) {
+        res.send(
+          JSON.stringify({
+            code: 0,
+            err: "Sesja wygasła. Zaloguj się ponownie",
+          })
+        );
+      } else {
+        console.log("Znaleziono konto");
+        var u = res2[0]; /// usuwanie id ze wzgledow bezpieczenstwa i wyslanie loginu i emaila do klienta
+        u.id = null;
+
+        res.send(
+          JSON.stringify({ code: 1, msg: "Pomyślnie zalogowano", user: u })
+        );
+      }
+    }
+  );
 });
 function generateToken() {
-  return crypto.randomBytes(32).toString('hex');
+  return crypto.randomBytes(32).toString("hex");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //UPDATE `seans` SET `id`=[value-1],`movieId`=[value-2],`data`=[value-3],`czas`=[value-4],`roomId`=[value-5] WHERE 1
 
@@ -533,21 +606,21 @@ let seansById = function (a) {
 };
 let seansByIds = function (a) {
   return new Promise((reso, erro) => {
-	var aa=a;
-	var str="";
-	console.log("pobieranie seansy");
-	console.log(a);
-	if(aa==null)return;
-	if(aa.length==0)return;
-	aa.forEach((e,i)=>{
-		console.log("dla seansu");
-		str+="`id` = "+e+" ";
-		if(i!=aa.length-1)str+="OR ";
-		console.log(str);
-	});
-	console.log("SELECT * FROM `seans` WHERE "+str);
+    var aa = a;
+    var str = "";
+    console.log("pobieranie seansy");
+    console.log(a);
+    if (aa == null) return;
+    if (aa.length == 0) return;
+    aa.forEach((e, i) => {
+      console.log("dla seansu");
+      str += "`id` = " + e + " ";
+      if (i != aa.length - 1) str += "OR ";
+      console.log(str);
+    });
+    console.log("SELECT * FROM `seans` WHERE " + str);
     connection.query(
-      "SELECT * FROM `seans` WHERE "+str,
+      "SELECT * FROM `seans` WHERE " + str,
       function (err, res, fields) {
         if (err) {
           throw "Linia 37 " + err.message;
@@ -557,6 +630,33 @@ let seansByIds = function (a) {
         reso(JSON.stringify(res));
       }
     );
+  });
+};
+
+let zakupione = function (a) {
+  return new Promise((reso, erro) => {
+    console.log("pobieranie zakupow");
+    try {
+      console.log(a);
+      userByToken(a).then((aa) => {
+        aa = JSON.parse(aa);
+        console.log(aa[0]);
+        if (aa == null) return;
+        connection.query(
+          "SELECT * FROM `rezerwacje` WHERE `id_login`=" + aa[0].id,
+          function (err, res, fields) {
+            if (err) {
+              throw "Linia 37 " + err.message;
+            }
+            if (!res || res.length == 0) throw { err: "Brak seansow" };
+            //return res;
+            reso(JSON.stringify(res));
+          }
+        );
+      });
+    } catch (err) {
+      console.log("ERROR " + err);
+    }
   });
 };
 let getMovieById = function (a) {
@@ -605,14 +705,14 @@ let roomsById = function (a) {
 let userByToken = function (a) {
   return new Promise((reso, erro) => {
     connection.query(
-      "SELECT * FROM `users` WHERE `token`=\""+a+"\"",
+      'SELECT * FROM `users` WHERE `token`="' + a + '"',
       function (err, res, fields) {
         if (err) {
           throw "Linia 37 " + err.message;
         }
-        if (!res || res.length == 0){
-			reso(JSON.stringify({err:"Brak takiej osoby lub sesja wygasła"}));
-		}
+        if (!res || res.length == 0) {
+          reso(JSON.stringify({ err: "Brak takiej osoby lub sesja wygasła" }));
+        }
         //return res;
         reso(JSON.stringify(res));
       }
