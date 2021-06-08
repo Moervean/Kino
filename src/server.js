@@ -93,7 +93,7 @@ app.get("/seansList/:ids", function (req, res) {
   try {
 	  var a=req.params.ids;
 	  a=JSON.parse(a);
-	  
+
     seansByIds(a).then((x) => {
 		var xx=JSON.parse(x);
 		xx={seanse:x,miejsca:a.miejsca};
@@ -109,19 +109,23 @@ app.get("/seansList/:ids", function (req, res) {
 //      Dodawanie do bazy /POST/
 //
 //
-app.post("/movieAdd", (req, res) => {
-  const movie = req.body;
-  console.log(movie);
+app.post("/movieAdd/:data", (req, res) => {
+  const data=JSON.parse(req.params.data);
+  const nazwa = data.nazwa;
+  const img = data.img;
+  const czasTrwania = data.czasTrwania;
+  const ocena = data.ocena;
+
 
   connection.query(
     "INSERT INTO `movie`( `nazwa`, `img`, `czasTrwania`, `ocena`) VALUES (\"" +
-      movie.nazwa +
+      nazwa +
       "\",\"" +
-      movie.img +
+      img +
       "\",\"" +
-      movie.czasTrwania +
+      czasTrwania +
       "\"," +
-      movie.ocena +
+      ocena +
       ")",
     function (err, res, fields) {
       if (err) {
@@ -130,7 +134,7 @@ app.post("/movieAdd", (req, res) => {
     }
   );
 
-  res.send("Dodano film: " + movie);
+  res.send("Dodano film: " );
 });
 //INSERT INTO `movie`(`id`, `nazwa`, `img`, `czasTrwania`, `ocena`) VALUES ([value-1],[value-2],[value-3],[value-4],[value-5])
 //UPDATE `movie` SET `id`=[value-1],`nazwa`=[value-2],`img`=[value-3],`czasTrwania`=[value-4],`ocena`=[value-5] WHERE 1
@@ -244,8 +248,8 @@ app.post("/rezerwacjaAdd/:data", (req, res) => {
 		  return;
 	  }
     });
-	
-  
+
+
 
   //res.send("Dodano rezerwacje: " + rez);
 });
@@ -294,7 +298,7 @@ app.post("/login/:data", (req, res) => {
 			res.send(JSON.stringify({code:0,err:"Nie ma konta o podanym loginie"}));
 		  }else{
 			  if(res2[0].password == sha256(user.password)){
-				  
+
 				  var token=generateToken();
 				  console.log("wygenerowany token: "+token)
 				  res.send(JSON.stringify({code:1,msg:"Pomyślnie zalogowano",token:token}));
@@ -388,7 +392,7 @@ app.get("/getUserData/:token", (req, res) => {
 			console.log("Znaleziono konto");
 			var u=res2[0];                     /// usuwanie id ze wzgledow bezpieczenstwa i wyslanie loginu i emaila do klienta
 			u.id=null;
-			
+
 			res.send(JSON.stringify({code:1,msg:"Pomyślnie zalogowano",user:u}));
 		  }
 	});
@@ -481,7 +485,7 @@ app.post("/seansDelete/:id", (req, res) => {
   const id = req.params.id;
   console.log(id);
   connection.query(
-    "DELETE FROM `seans` WHERE `id` = " + id,
+    "DELETE FROM `seans` WHERE `movieId` = " + id,
     function (err, res, fields) {
       if (err) {
         console.log(err.message);
@@ -510,7 +514,7 @@ let seanse = function () {
       if (err) {
         throw "Linia 37 " + err.message;
       }
-      if (!res || res.length == 0) throw { err: "Brak seansow" };
+      //if (!res || res.length == 0) throw { err: "Brak seansow" };
       //return res;
       reso(JSON.stringify(res));
     });

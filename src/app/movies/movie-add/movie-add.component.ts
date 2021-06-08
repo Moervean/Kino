@@ -35,11 +35,12 @@ export class MovieAddComponent implements OnInit {
         ocena: 0
       };
 
-      this.http.post('http://localhost:8080/movieADD/' + encodeURIComponent(JSON.stringify(httpOptions)),
+      this.http.post('http://localhost:8080/movieAdd/' + encodeURIComponent(JSON.stringify(httpOptions)),
         {headers: headers}).subscribe(data => {
-        console.log(data);
-      });
 
+
+
+      });
       this.msService.addMovie(this.movieForm.value.title,
         this.movieForm.value.img,
         this.movieForm.value.duration);

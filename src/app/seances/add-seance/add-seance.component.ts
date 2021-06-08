@@ -9,6 +9,7 @@ import {MatDialog, MatDialogConfig, MatDialogModule, MatDialogRef} from '@angula
 import {ErrorComponentComponent} from '../../error-component/error-component.component';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {roomsServices} from '../../services/roms.services';
+import {Route, Router} from '@angular/router';
 
 @Component({
   selector: 'app-add-seance',
@@ -30,7 +31,8 @@ export class AddSeanceComponent implements OnInit {
               private seancesSerivce: SeancesService,
               private dialog: MatDialog,
               private http: HttpClient,
-              private rmService: roomsServices
+              private rmService: roomsServices,
+              private router: Router
               ) {
   }
 
@@ -71,6 +73,7 @@ export class AddSeanceComponent implements OnInit {
         });
 
         this.seancesSerivce.reloadList();
+        this.router.navigate(['/seances']);
 
       }
     }else{

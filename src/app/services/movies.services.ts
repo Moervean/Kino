@@ -6,6 +6,7 @@ import {HttpClient} from '@angular/common/http';
 @Injectable()
 export class moviesServices {
   jsonvar;
+  lastid;
   private _movieList: MovieModel[] = [];
 
     constructor(private http: HttpClient) {
@@ -14,6 +15,7 @@ export class moviesServices {
         for (let i = 0; i < this.jsonvar.length; i++) {
           this._movieList.push(new MovieModel(this.jsonvar[i]["id"],this.jsonvar[i]["nazwa"],this.jsonvar[i]["img"],this.jsonvar[i]["czasTrwania"],
             this.jsonvar[i]["ocena"]));
+          this.lastid= this.jsonvar[i]["id"];
         }
       });
    }
@@ -22,7 +24,10 @@ export class moviesServices {
 
    }
   addMovie(title: string, img: string, duration: string): void {
-    this._movieList.push(new MovieModel(1, title, img, duration, 0));
+
+      this.lastid++;
+      console.log(this.lastid);
+    this._movieList.push(new MovieModel(this.lastid, title, img, duration, 0));
   }
   get movieList(): MovieModel[] {
 
@@ -47,6 +52,9 @@ export class moviesServices {
     }
 
     this.http.post('http://localhost:8080/movieDelete/' + id, '').subscribe(data => {
+      console.log(data);
+    });
+    this.http.post('http://localhost:8080/seansDelete/' + id, '').subscribe(data => {
       console.log(data);
     });
   }
